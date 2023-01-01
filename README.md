@@ -2,7 +2,7 @@
 Application to get data from catfact api with rate limiter.
 Utilizing Polly libary and https://catfact.ninja/ api.
 
-Application prints out a list of all cat breeds and some facts provided by the api, and throttles the rate limit to 2 requests pr 10 secounds.
+Application prints out a list of all cat breeds and some facts provided by the api, and throttles the rate limit to 2 requests pr 10 secounds. If limit is reached it is set to sleep for remaining time, and attempt the request again.
 
 ```
 Policy.RateLimitAsync(2, TimeSpan.FromSeconds(10));
