@@ -1,5 +1,4 @@
 ﻿using CatFactConsoleApplication.Services;
-
 namespace CatFactConsoleApplication;
 
 public class Program
@@ -11,8 +10,7 @@ public class Program
     {
         _apiWrapper = new CatFactApiWrapper();
 
-
-
+        
         Console.WriteLine("Cat breeds:");
         var catBreeds = _apiWrapper.FetchCatBreeds().Result;
 
@@ -24,9 +22,8 @@ public class Program
                               $"Coat: {breed.coat}\n" +
                               $"Pattern: {breed.pattern}\n");
         });
-            
-
-
+        
+        
         Console.WriteLine("Cat facts:");
         var fact = _apiWrapper.FetchFact(5).Result;
         

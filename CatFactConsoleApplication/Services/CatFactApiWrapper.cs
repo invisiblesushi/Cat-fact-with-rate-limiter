@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.RateLimit;
 using CatFactConsoleApplication.Model;
-
 namespace CatFactConsoleApplication.Services;
 
 public class CatFactApiWrapper
@@ -63,7 +62,7 @@ public class CatFactApiWrapper
         var json = JsonConvert.DeserializeObject<JToken>(response) ?? new object().ToString();
         var result = JsonConvert.DeserializeObject<TResult>(json.ToString());
         
-        return result;
+        return result!;
     }
 
     private static async Task<string> GetRequestAsync(string url)
@@ -75,50 +74,25 @@ public class CatFactApiWrapper
         {
             try
             {
+                // Execute getAsync as async with rateLimit
                 response = await _rateLimit.ExecuteAsync(() => _httpClient!.GetAsync(url));
             }
             catch (RateLimitRejectedException ex)
             {
+                // Set response to null, if rate limit exception is triggered.
                 response = null;
-                string retryAfter = DateTimeOffset.UtcNow
-                    .Add(ex.RetryAfter)
-                    .ToUnixTimeSeconds()
-                    .ToString(CultureInfo.InvariantCulture);
+                
                 Console.WriteLine($"Rate limited {ex.RetryAfter}");
                 Thread.Sleep(ex.RetryAfter);
             }
-
-            if (response == null)
-            {
-                tryAgain = true;
-            }
-            else
+            
+            // If response is null, it will try request again.
+            if (response != null)
             {
                 tryAgain = false;
             }
-
         }
 
-        return response.Content.ReadAsStringAsync().Result;
+        return response!.Content.ReadAsStringAsync().Result;
     }
-
-
-    
-
-    /*
-    var response = await rateLimit.ExecuteAsync(() => _httpClient!.GetAsync(url));
-    Console.WriteLine(DateTime.Now);
-
-
-    //var response = await _httpClient!.GetAsync(url);
-
-    if (!response.IsSuccessStatusCode)
-    {
-        throw new ApplicationException($"Api endpoint {url} failed with status {response.StatusCode}");
-    }
-
-    return response.Content.ReadAsStringAsync().Result;
-}
-*/
-
 }
