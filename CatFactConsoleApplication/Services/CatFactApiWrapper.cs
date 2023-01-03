@@ -79,9 +79,6 @@ public class CatFactApiWrapper
             }
             catch (RateLimitRejectedException ex)
             {
-                // Set response to null, if rate limit exception is triggered.
-                response = null;
-                
                 Console.WriteLine($"Rate limited {ex.RetryAfter}");
                 Thread.Sleep(ex.RetryAfter);
             }
