@@ -1,4 +1,4 @@
-# Cat-fact-with-rate-limiter
+# Polly-rate-limiter-example
 Application to get data from catfact api with rate limiter.
 Utilizing Polly libary and https://catfact.ninja/ api.
 
